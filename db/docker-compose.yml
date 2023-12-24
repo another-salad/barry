@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  db:
+    image: mysql:8.0-debian
+    container_name: mysqlTempDB
+    restart: always
+    # for testing
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_USER_FILE=/run/secrets/user_name
+      - MYSQL_PASSWORD_FILE=/run/secrets/user_pw
+      - MYSQL_DATABASE=tempdatadb
+      - MYSQL_RANDOM_ROOT_PASSWORD=sure
+      - TZ=Europe/London
+    secrets:
+      - user_name
+      - user_pw
+    volumes:
+      - ./dbinit:/docker-entrypoint-initdb.d/:ro
+      - ./dbfiles:/var/lib/mysql
+
+secrets:
+  user_name:
+    file: ../secrets/.db_user_name
+  user_pw:
+    file: ../secrets/.db_user_pw

@@ -1,0 +1,18 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+
+WORKDIR /app
+
+COPY dbApp/. ./dbApp/
+RUN dotnet restore ./dbApp
+RUN dotnet publish ./dbApp -o out
+
+FROM mcr.microsoft.com/powershell:preview-7.4-debian-bullseye-slim
+
+WORKDIR /app
+
+COPY --from=build /app/out .
+# Now copy across all the runtime powershell files
+COPY runtime/. /app/
+
+# Set the entrypoint to PowerShell
+ENTRYPOINT ["pwsh"]

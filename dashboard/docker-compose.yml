@@ -1,0 +1,25 @@
+version: "3"
+
+networks:
+  tempsensor_network:
+    external: true
+
+services:
+  tempcollector:
+    build: .
+    container_name: sensorTempCollector
+    environment:
+      - TZ=Europe/London
+    secrets:
+      - dbUser
+      - dbPassword
+    networks:
+      tempsensor_network:
+        ipv4_address: 192.168.80.11
+    command: "./add_records.ps1 ${SENSORHOST} ${DBHOST} ${DBNAME}"
+
+secrets:
+  dbUser:
+    file: ../secrets/.db_user_name
+  dbPassword:
+    file: ../secrets/.db_user_pw

@@ -79,6 +79,12 @@ namespace mysqlefcore {
             return records;
         }
 
+        public async Task<List<tempCData>> GetRecordsLastXDays(int days = -7) {
+            // Defaults to the last 7 days
+            var records = await tempCData.Where(x => x.timestamp > DateTime.Now.AddDays(days)).ToListAsync();
+            return records;
+        }
+
     }
 
 }

@@ -7,8 +7,18 @@ public class TemperatureSensorDataService {
         _context = context;
     }
 
-    public async Task<List<mysqlefcore.tempCData>> GetAllRecordsInMonthAsync()
-    {
+    public async Task<List<mysqlefcore.tempCData>> GetAllRecordsInMonthAsync() {
         return await _context.GetAllRecordsInMonth();
     }
+
+    // Expensive (Current year only)
+    public async Task<List<mysqlefcore.tempCData>> GetAllRecordsInYearAsync() {
+        return await _context.GetAllRecordsInYear();
+    }
+
+    public async Task<List<mysqlefcore.tempCData>> GetLastSevenDaysAsync() {
+        // Defaults to last 7 days
+        return await _context.GetRecordsLastXDays();
+    }
+
 }

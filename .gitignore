@@ -462,3 +462,6 @@ __pycache__/
 
 # Avoid security woes
 appsettings.json
+
+# OTHER
+NOTES

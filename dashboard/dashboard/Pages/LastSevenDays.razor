@@ -1,0 +1,28 @@
+@page "/lastsevendays"
+@inherits BaseDrawChart
+@using Plotly.Blazor.Traces
+@using Plotly.Blazor.LayoutLib
+@using dashboard.Data
+@using Plotly.Blazor.Traces.ScatterGlLib
+@inject TemperatureSensorDataService sensorService
+
+<div style="height:1000px;"><PlotlyChart @ref="chart" /></div>
+
+
+@code {
+    private PlotlyChart ?chart;
+
+    protected override async Task OnInitializedAsync() {
+        sensorData = await sensorService.GetLastSevenDaysAsync();
+        await base.OnInitializedAsync();
+        // Some copa pasta boiler plate due to the nature of the Plotly Chart. Might need more thought.
+        if (chart != null && traces != null) {
+            #pragma warning disable CS4014, BL0005
+            chart.Layout = new Layout() {
+                Title = new Title() { Text = $"Temperature Sensor Data for the last seven days." }
+            };
+            chart.Data = traces.Cast<ITrace>().ToList();
+            chart.Update();
+        }
+    }
+}

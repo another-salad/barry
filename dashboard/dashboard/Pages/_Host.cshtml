@@ -1,0 +1,9 @@
+﻿@page "/"
+@namespace dashboard.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "_Layout";
+}
+
+<component type="typeof(App)" render-mode="ServerPrerendered" />
+<script src="_content/Plotly.Blazor/plotly-latest.min.js"></script>

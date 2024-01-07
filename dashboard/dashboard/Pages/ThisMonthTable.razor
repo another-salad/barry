@@ -1,0 +1,38 @@
+@page "/thismonthtable"
+@using dashboard.Data
+@inject TemperatureSensorDataService sensorService
+
+<h1>Temperature Sensor Data for @DateTime.Now.ToString("MMMM")</h1>
+
+@if (sensorData == null) {
+    <p><em>Loading...</em></p>
+}
+else {
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Sensor</th>
+                <th>Temp. (C)</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var sensorRow in sensorData)
+            {
+                <tr>
+                    <td>@sensorRow.sensorName</td>
+                    <td>@Math.Round(sensorRow.temperatureC, 2)</td>
+                    <td>@sensorRow.timestamp.ToString("HH:mm:ss")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<mysqlefcore.tempCData> ?sensorData;
+
+    protected override async Task OnInitializedAsync() {
+        sensorData = await sensorService.GetAllRecordsInMonthAsync();
+    }
+}

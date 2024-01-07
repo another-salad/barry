@@ -1,0 +1,35 @@
+﻿@page "/"
+@using Plotly.Blazor.Traces
+@using Plotly.Blazor.LayoutLib
+@using dashboard.Data
+@using Plotly.Blazor.Traces.ScatterGlLib
+@inject TemperatureSensorDataService sensorService
+
+<div style="height:1000px;"><PlotlyChart @ref="chart" /></div>
+
+
+@code {
+    private List<mysqlefcore.tempCData> ?sensorData;
+
+    private PlotlyChart ?chart;
+
+    protected override async Task OnInitializedAsync() {
+        sensorData = await sensorService.GetAllRecordsInMonthAsync();
+        await base.OnInitializedAsync();
+        var traces = sensorData.GroupBy(r => r.sensorName)
+                            .Select(g => new ScatterGl(){
+                                X = g.Select(r => (object)r.timestamp).ToList(),
+                                Y = g.Select(r => (object)r.temperatureC).ToList(),
+                                Mode = ModeFlag.Lines,
+                                Name = $"Sensor {g.Key}"
+                            }).ToList<object>();
+
+        chart.Layout = new Layout() {
+            Title = new Title() { Text = $"Temperature Sensor Data for {DateTime.Now.ToString("MMMM")}" }
+        };
+        chart.Data = traces.Cast<ITrace>().ToList();
+        chart.Update();
+        @* StateHasChanged(); *@
+    }
+
+}

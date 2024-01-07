@@ -11,22 +11,34 @@ namespace mysqlefcore {
         public string? sensorName { get; set; }
     }
 
-    public class TempSensorDbContext(string DBConnectionString) : DbContext {
+    public class TempSensorDbContext : DbContext {
+
+        public TempSensorDbContext(DbContextOptions<TempSensorDbContext> options) : base(options) {
+        }
+
+        public static TempSensorDbContext Create(string connectionString) {
+            return new TempSensorDbContext(
+                new DbContextOptionsBuilder<TempSensorDbContext>().UseMySQL(connectionString).Options);
+        }
 
         public DbSet<tempCData> tempCData { get; set; }
+
+        private string? _DBConnectionString { get; set; }
 
         private readonly int CurrentYear = DateTime.Now.Year;
 
         private readonly int CurrentMonth = DateTime.Now.Month;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-            optionsBuilder.UseMySQL(DBConnectionString);
+            if (!optionsBuilder.IsConfigured && _DBConnectionString != null) {
+                optionsBuilder.UseMySQL(_DBConnectionString);
+            }
         }
-
         public void AddTempRecord(double tempC, string sensorName) {
             var record = new tempCData {
                 temperatureC = tempC,
-                sensorName = sensorName
+                sensorName = sensorName,
+                timestamp = DateTime.Now
             };
             tempCData.Add(record);
             SaveChanges();

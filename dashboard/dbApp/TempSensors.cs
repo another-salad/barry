@@ -85,6 +85,11 @@ namespace mysqlefcore {
             return records;
         }
 
+        public async Task<List<tempCData>> GetRecordsInRange(DateTime start, DateTime end) {
+            var records = await tempCData.Where(x => x.timestamp >= start && x.timestamp <= end).ToListAsync();
+            return records;
+        }
+
     }
 
 }

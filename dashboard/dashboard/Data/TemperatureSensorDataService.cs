@@ -21,4 +21,8 @@ public class TemperatureSensorDataService {
         return await _context.GetRecordsLastXDays();
     }
 
+    public async Task<List<mysqlefcore.tempCData>> GetRecordsInRangeAsync(DateTime start, DateTime end) {
+        return await _context.GetRecordsInRange(start, end);
+    }
+
 }

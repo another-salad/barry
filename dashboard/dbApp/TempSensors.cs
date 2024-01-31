@@ -86,6 +86,7 @@ namespace mysqlefcore {
         }
 
         public async Task<List<tempCData>> GetRecordsInRange(DateTime start, DateTime end) {
+            end = end.AddDays(1);  // Add a day to the end date to include it in the range
             var records = await tempCData.Where(x => x.timestamp >= start && x.timestamp <= end).ToListAsync();
             return records;
         }

@@ -10,8 +10,9 @@ Import-Module ./dbApp.dll
 
 
 $dbConnectionString = Create-DBConnectionString $dbHost $dbName
-$db=[mysqlefcore.TempSensorDbContext]::Create($dbConnectionString)
+$dbContext=[mysqlefcore.SensorDBContext]::Create($dbConnectionString)
+$SensorController=[mysqlefcore.TempSensorController]::New($dbContext)
 $allSensors = Get-TempData $sensorHost
 foreach ($sensor in $allSensors.Keys) {
-    $db.AddTempRecord($allSensors.$sensor, $sensor)
+    $SensorController.AddTempRecord($allSensors.$sensor, $sensor)
 }

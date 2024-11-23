@@ -1,17 +1,15 @@
-version: "3"
-
 networks:
-  tempsensor_network:
+  localdbnetwork:
     external: true
 
 services:
   db:
     image: mysql:8.0-debian
     container_name: mysqlTempDB
-    restart: always
+    # restart: always
     # for testing
-    # ports:
-    #   - 3306:3306
+    ports:
+      - 3306:3306
     environment:
       - MYSQL_USER_FILE=/run/secrets/user_name
       - MYSQL_PASSWORD_FILE=/run/secrets/user_pw
@@ -25,8 +23,8 @@ services:
       - ./dbinit:/docker-entrypoint-initdb.d/:ro
       - ./dbfiles:/var/lib/mysql
     networks:
-      tempsensor_network:
-        ipv4_address: 192.168.80.10
+      - localdbnetwork
+        # ipv4_address: 192.168.80.10
 
 secrets:
   user_name:

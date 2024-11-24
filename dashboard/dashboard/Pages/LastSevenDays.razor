@@ -2,9 +2,10 @@
 @inherits BaseDrawChart
 @using Plotly.Blazor.Traces
 @using Plotly.Blazor.LayoutLib
-@using dashboard.Data
 @using Plotly.Blazor.Traces.ScatterGlLib
-@inject TemperatureSensorDataService sensorService
+@using dashboard.Data
+@using mysqlefcore
+@inject SensorDataService<TempSensorController, tempCData> TempSensorService
 
 <div style="height:1000px;"><PlotlyChart @ref="chart" /></div>
 
@@ -13,7 +14,7 @@
     private PlotlyChart ?chart;
 
     protected override async Task OnInitializedAsync() {
-        sensorData = await sensorService.GetLastSevenDaysAsync();
+        sensorData = await TempSensorService.GetLastSevenDaysAsync();
         await base.OnInitializedAsync();
         // Some copa pasta boiler plate due to the nature of the Plotly Chart. Might need more thought.
         if (chart != null && traces != null) {

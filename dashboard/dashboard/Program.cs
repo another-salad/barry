@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using dashboard.Data;
 using Microsoft.EntityFrameworkCore;
 using MySql.EntityFrameworkCore.Extensions;
+using dashboard.Data;
+using mysqlefcore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,8 +16,13 @@ if (connectionString == null) {
     return;
 }
 
-builder.Services.AddDbContext<mysqlefcore.TempSensorDbContext>(options => options.UseMySQL(connectionString));
-builder.Services.AddScoped<TemperatureSensorDataService>();
+builder.Services.AddDbContext<SensorDBContext>(options => options.UseMySQL(connectionString));
+// Register the conrollers
+builder.Services.AddScoped<TempSensorController>();
+builder.Services.AddScoped<HumiditySensorController>();
+// Add controller services
+builder.Services.AddScoped<SensorDataService<TempSensorController, tempCData>>();
+builder.Services.AddScoped<SensorDataService<HumiditySensorController, humidityData>>();
 
 var app = builder.Build();
 

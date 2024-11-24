@@ -1,6 +1,7 @@
 @page "/thismonthtable"
 @using dashboard.Data
-@inject TemperatureSensorDataService sensorService
+@using mysqlefcore
+@inject SensorDataService<TempSensorController, tempCData> TempSensorService
 
 <h1>Temperature Sensor Data for @DateTime.Now.ToString("MMMM")</h1>
 
@@ -33,6 +34,6 @@ else {
     private List<mysqlefcore.tempCData> ?sensorData;
 
     protected override async Task OnInitializedAsync() {
-        sensorData = await sensorService.GetAllRecordsInMonthAsync();
+        sensorData = await TempSensorService.GetAllRecordsInMonthAsync();
     }
 }

@@ -8,8 +8,8 @@ services:
     container_name: mysqlTempDB
     restart: always
     # for testing
-    ports:
-      - 3306:3306
+    # ports:
+    #   - 3306:3306
     environment:
       - MYSQL_USER_FILE=/run/secrets/user_name
       - MYSQL_PASSWORD_FILE=/run/secrets/user_pw

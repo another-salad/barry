@@ -14,12 +14,11 @@ namespace mysqlefcore {
         public string? sensorName { get; set; }
     }
 
-    // Cased correctly, I am not going to deal with a db table rename for above....
-    public class HumidityData {
-        public int Id { get; private set; }
-        public DateTime Timestamp { get; set; }
-        public double Humidity { get; set; }
-        public string? SensorName { get; set; }
+    public class humidityData {
+        public int id { get; private set; }
+        public DateTime timestamp { get; set; }
+        public double humidity { get; set; }
+        public string? sensorName { get; set; }
     }
 
     public class SensorDBContext : DbContext {
@@ -27,11 +26,14 @@ namespace mysqlefcore {
         public SensorDBContext(DbContextOptions<SensorDBContext> options) : base(options) {
             Database.EnsureCreated();
             tempCData = Set<tempCData>();
+            humidityData = Set<humidityData>();
         }
 
         private string? _DBConnectionString { get; set; }
 
         public DbSet<tempCData> tempCData { get; set; }
+
+        public DbSet<humidityData> humidityData {get; set;}
 
         public static SensorDBContext Create(string connectionString) {
             return new SensorDBContext(
@@ -106,9 +108,28 @@ namespace mysqlefcore {
         public TempSensorController(SensorDBContext dbContext) : base(dbContext){
             _dbContext = dbContext;
         }
+
         public void AddTempRecord(double tempC, string sensorName) {
             var record = new tempCData {
                 temperatureC = tempC,
+                sensorName = sensorName,
+                timestamp = DateTime.Now
+            };
+            _dbContext.Add(record);
+            _dbContext.SaveChanges();
+        }
+
+    }
+
+    public class HumiditySensorController : SensorControllerBase {
+
+        public HumiditySensorController(SensorDBContext dbContext) : base(dbContext) {
+            _dbContext = dbContext;
+        }
+
+        public void AddHumidityRecord(double humidity, string sensorName) {
+            var record = new humidityData {
+                humidity = humidity,
                 sensorName = sensorName,
                 timestamp = DateTime.Now
             };

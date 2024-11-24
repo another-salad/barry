@@ -1,11 +1,11 @@
-﻿@page "/"
+@page "/thismonth-humidity"
 @using Plotly.Blazor.Traces
 @using Plotly.Blazor.LayoutLib
 @using Plotly.Blazor.Traces.ScatterGlLib
 @using dashboard.Data
 @using mysqlefcore
-@inherits BaseDrawChart<mysqlefcore.tempCData>
-@inject SensorDataService<TempSensorController, tempCData> TempSensorService
+@inherits BaseDrawChart<mysqlefcore.humidityData>
+@inject SensorDataService<HumiditySensorController, humidityData> HumiditySensorService
 
 <div style="height:1000px;"><PlotlyChart @ref="chart" /></div>
 
@@ -14,7 +14,7 @@
     private PlotlyChart ?chart;
 
     protected override async Task OnInitializedAsync() {
-        sensorData = await TempSensorService.GetAllRecordsInMonthAsync();
+        sensorData = await HumiditySensorService.GetAllRecordsInMonthAsync();
         await base.OnInitializedAsync();
         if (chart != null && traces != null) {
             // The below warning is nonsense.
@@ -22,7 +22,7 @@
             // chart will be updated when the user interacts with it.
             #pragma warning disable CS4014, BL0005
             chart.Layout = new Layout() {
-                Title = new Title() { Text = $"Temperature Sensor Data for {DateTime.Now.ToString("MMMM")}" }
+                Title = new Title() { Text = $"Humidity Sensor Data for {DateTime.Now.ToString("MMMM")}" }
             };
             chart.Data = traces.Cast<ITrace>().ToList();
             chart.Update();

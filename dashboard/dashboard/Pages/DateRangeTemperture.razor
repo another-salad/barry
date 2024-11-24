@@ -1,10 +1,10 @@
-@page "/daterange"
-@inherits BaseDrawChart
+@page "/daterange-temperature"
 @using Plotly.Blazor.Traces
 @using Plotly.Blazor.LayoutLib
 @using Plotly.Blazor.Traces.ScatterGlLib
 @using dashboard.Data
 @using mysqlefcore
+@inherits BaseDrawChart<mysqlefcore.tempCData>
 @inject SensorDataService<TempSensorController, tempCData> TempSensorService
 
 <div>

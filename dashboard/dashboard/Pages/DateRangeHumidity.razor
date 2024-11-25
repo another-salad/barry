@@ -1,0 +1,51 @@
+@page "/daterange-humidity"
+@using Plotly.Blazor.Traces
+@using Plotly.Blazor.LayoutLib
+@using Plotly.Blazor.Traces.ScatterGlLib
+@using dashboard.Data
+@using mysqlefcore
+@inherits BaseDrawChart<mysqlefcore.humidityData>
+@inject SensorDataService<HumiditySensorController, humidityData> HumiditySensorService
+
+<div>
+    <label for="start">Start date:</label>
+    <input type="date" id="start" @onchange="@(e => UpdateDate(e, true))">
+
+    <label for="end">End date:</label>
+    <input type="date" id="end" @onchange="@(e => UpdateDate(e, false))">
+</div>
+
+<div style="height:1000px;"><PlotlyChart @ref="chart" /></div>
+
+@code {
+    private PlotlyChart ?chart;
+    private DateTime startDate;
+    private DateTime endDate;
+
+    private void UpdateDate(ChangeEventArgs e, bool isStartDate) {
+        if (e.Value is string dateString) {
+            var dateVar = DateTime.Parse(dateString);
+            if (isStartDate) {
+                startDate = dateVar;
+            } else {
+                endDate = dateVar;
+            }
+            UpdateChart();
+        }
+    }
+
+    private async void UpdateChart() {
+        if (startDate != default(DateTime) && endDate != default(DateTime)) {
+            sensorData = await HumiditySensorService.GetRecordsInRangeAsync(startDate, endDate);
+            await base.OnInitializedAsync();
+            if (chart != null && traces != null) {
+                #pragma warning disable CS4014, BL0005
+                chart.Layout = new Layout() {
+                    Title = new Title() { Text = $"Humidity Sensor Data from {startDate.ToString("dd/MM/yyyy")} to {endDate.ToString("dd/MM/yyyy")}." }
+                };
+                chart.Data = traces.Cast<ITrace>().ToList();
+                chart.Update();
+            }
+        }
+    }
+}

@@ -1,28 +1,28 @@
-namespace dashboard.Data;
+using System.Collections.Generic;
+using mysqlefcore;
 
-public class TemperatureSensorDataService {
-    private readonly mysqlefcore.TempSensorDbContext _context;
+namespace dashboard.Data {
+    public class SensorDataService<TController, TData> where TController : SensorControllerBase where TData : class {
+        private readonly TController _controller;
 
-    public TemperatureSensorDataService(mysqlefcore.TempSensorDbContext context) {
-        _context = context;
+        public SensorDataService(TController controller) {
+            _controller = controller;
+        }
+
+        public async Task<List<TData>> GetAllRecordsInMonthAsync() {
+            return await _controller.GetAllRecordsInMonth<TData>();
+        }
+
+        public async Task<List<TData>> GetAllRecordsInYearAsync() {
+            return await _controller.GetAllRecordsInYear<TData>();
+        }
+
+        public async Task<List<TData>> GetLastSevenDaysAsync() {
+            return await _controller.GetRecordsLastXDays<TData>();
+        }
+
+        public async Task<List<TData>> GetRecordsInRangeAsync(DateTime start, DateTime end) {
+            return await _controller.GetRecordsInRange<TData>(start, end);
+        }
     }
-
-    public async Task<List<mysqlefcore.tempCData>> GetAllRecordsInMonthAsync() {
-        return await _context.GetAllRecordsInMonth();
-    }
-
-    // Expensive (Current year only)
-    public async Task<List<mysqlefcore.tempCData>> GetAllRecordsInYearAsync() {
-        return await _context.GetAllRecordsInYear();
-    }
-
-    public async Task<List<mysqlefcore.tempCData>> GetLastSevenDaysAsync() {
-        // Defaults to last 7 days
-        return await _context.GetRecordsLastXDays();
-    }
-
-    public async Task<List<mysqlefcore.tempCData>> GetRecordsInRangeAsync(DateTime start, DateTime end) {
-        return await _context.GetRecordsInRange(start, end);
-    }
-
 }

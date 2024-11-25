@@ -1,4 +1,4 @@
-﻿@page "/"
+@page "/lastsevendays-temperature"
 @using Plotly.Blazor.Traces
 @using Plotly.Blazor.LayoutLib
 @using Plotly.Blazor.Traces.ScatterGlLib
@@ -14,15 +14,13 @@
     private PlotlyChart ?chart;
 
     protected override async Task OnInitializedAsync() {
-        sensorData = await TempSensorService.GetAllRecordsInMonthAsync();
+        sensorData = await TempSensorService.GetLastSevenDaysAsync();
         await base.OnInitializedAsync();
+        // Some copa pasta boiler plate due to the nature of the Plotly Chart. Might need more thought.
         if (chart != null && traces != null) {
-            // The below warning is nonsense.
-            // CS4014: I cannot await chart.Update() because we are statically rendering, in practise this doesn't matter. The
-            // chart will be updated when the user interacts with it.
             #pragma warning disable CS4014, BL0005
             chart.Layout = new Layout() {
-                Title = new Title() { Text = $"Temperature Sensor Data for {DateTime.Now.ToString("MMMM")}" }
+                Title = new Title() { Text = $"Temperature Sensor Data for the last seven days." }
             };
             chart.Data = traces.Cast<ITrace>().ToList();
             chart.Update();

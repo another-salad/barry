@@ -20,12 +20,14 @@ services:
     container_name: nginx_proxy
     ports:
       - "80:80"
+      - "443:443"
     depends_on:
       - tempsensordashboard
     environment:
       - TZ=Europe/London
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./certs/:/etc/nginx/sys_certs
     networks:
       tempsensor_network:
         ipv4_address: 192.168.80.13
